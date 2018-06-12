@@ -1,28 +1,51 @@
 #!/usr/bin/python
+def createScatterPlot():
+    pass
+
+
+
 
 import sys
 import pickle
 sys.path.append("../tools/")
-
+import json
 from feature_format import featureFormat, targetFeatureSplit
 from tester import dump_classifier_and_data
+import matplotlib.pyplot as mp
 
 ### Task 1: Select what features you'll use.
 ### features_list is a list of strings, each of which is a feature name.
 ### The first feature must be "poi".
-features_list = ['poi','salary'] # You will need to use more features
+
+features_list = ['poi','salary','bonus','total_payments','total_stock_value','expenses','long_term_incentive'] # You will need to use more features
 
 ### Load the dictionary containing the dataset
 with open("final_project_dataset.pkl", "r") as data_file:
     data_dict = pickle.load(data_file)
 
 ### Task 2: Remove outliers
+data = featureFormat(data_dict,features_list)
+values=[]
+for point in data:
+    poi=point[0]
+    salary = point[1]
+    values.append((poi,salary))
+    mp.scatter(poi,salary)
+    pass
+outlier =sorted(values,key=lambda x:x[0],reverse=True)
+#print(outlier)
+for key in data_dict:
+    for x in range(2):
+        if outlier[x][1] == data_dict[key]['salary']:
+            print(key)
+mp.show()    
 ### Task 3: Create new feature(s)
 ### Store to my_dataset for easy export below.
 my_dataset = data_dict
 
 ### Extract features and labels from dataset for local testing
 data = featureFormat(my_dataset, features_list, sort_keys = True)
+#print(data)
 labels, features = targetFeatureSplit(data)
 
 ### Task 4: Try a varity of classifiers
